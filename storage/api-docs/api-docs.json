@@ -1,0 +1,720 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Common Starter",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/laravel-common-starter/public/api/v1",
+            "description": "Common Starter"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sign in",
+                "description": "Login by email, password",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "iroid.test1@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address or password. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset password",
+                "description": "Get reset link by email",
+                "requestBody": {
+                    "description": "Pass user email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "iroid.test1@gmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Wrong email response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/change-password": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Change password",
+                "description": "after successfully change password all tokens will be revoked except current one",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "old_password",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "admin123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Your password has been changed successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user",
+                "description": "all filed are required except time zone",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "first_name",
+                                    "last_name",
+                                    "password",
+                                    "password_confirmation",
+                                    "profile_pic"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "description": "first name must be atleast 4chars",
+                                        "type": "string",
+                                        "minimum": "4",
+                                        "example": "iRoid"
+                                    },
+                                    "last_name": {
+                                        "description": "last name must be atleast 4chars",
+                                        "type": "string",
+                                        "minimum": "4",
+                                        "example": "testing"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "iroid.test1@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "minimum": "8",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "minimum": "8",
+                                        "example": "password"
+                                    },
+                                    "time_zone": {
+                                        "description": "if time zone not passed it will consider UTC",
+                                        "type": "string",
+                                        "example": "Asia/Kolkata"
+                                    },
+                                    "profile_pic": {
+                                        "description": "",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sign up successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Common"
+                ],
+                "summary": "User logout",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_id"
+                                ],
+                                "properties": {
+                                    "device_id": {
+                                        "type": "string",
+                                        "example": "7e2848ed2efc7d22170dc6948fe718b5d7dae11c"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logout successfuly",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid Request params",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/refresh-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh Token",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "refresh_token": {
+                                        "type": "string",
+                                        "example": "def5020075819e4748adefe1f860566c3b41437f2b7e396db025b4d384e6b5db5911a3cfc224e2b2471b111be6113e5a807aac58edc41634ec7babd26d4482de8412402ec1798f6c2e793249d8993e3b02506de8d1bbcd45fe551cd23c5695d2f79e11dec3e6502ff31588f5deefe65885041108513b40321afe392628cd0867cb4d5df1a023c30f5d4f2dc4c87f2c140a6bc625e0d5fa98ce2b20f15492ecca590ada4557540e7231c33587eb434cc027ec7e5e0d07d6d9bd16d7c1520110093e5d228707fc8ebae8020d062cea8cce01eeb3344fcf9854fabcb89660d68966a05c878656bb9acc5df678156e9729278152dae00f6198660faebe52beb74c629aef8ed4cf49ab0ca86978679a17cc273afe8ca3f1c86f989c7c01f017d1479002885640d68e01b59df5bdce5438306195ee7c51ca72b7e8149d3ed3b94402f528569956ca833b074aa74cb42098df96023e9f1bc0b0c3bdddd233337130633239388bf1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Refresh token generated successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Token is either expired or revoked. In such cases, redirect the user to login screen",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Common"
+                ],
+                "summary": "Get user profile",
+                "responses": {
+                    "200": {
+                        "description": "Profile retreived successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/update": {
+            "post": {
+                "tags": [
+                    "Common"
+                ],
+                "summary": "Update profile info",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name",
+                                    "profile_pic"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "description": "first name must be atleast 4chars",
+                                        "type": "string",
+                                        "minimum": "4",
+                                        "example": "iRoid"
+                                    },
+                                    "last_name": {
+                                        "description": "last name must be atleast 4chars",
+                                        "type": "string",
+                                        "minimum": "4",
+                                        "example": "testing"
+                                    },
+                                    "time_zone": {
+                                        "type": "string",
+                                        "example": "Asia/Kolkata"
+                                    },
+                                    "profile_pic": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sign up successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/social/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Social login",
+                "requestBody": {
+                    "description": "If email is empty then send it in this format: ***provider_id@provider_type.com*** i.e ***100384341197888609672@google.com***",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "provider_id",
+                                    "provider_type",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "salman ansari"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "salman.iroid@gmail.com"
+                                    },
+                                    "profile_picture": {
+                                        "type": "string",
+                                        "example": "http://example.com/test.jpg"
+                                    },
+                                    "provider_id": {
+                                        "type": "string",
+                                        "example": "100384341197888609672"
+                                    },
+                                    "provider_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "google",
+                                            "facebook",
+                                            "apple",
+                                            "github"
+                                        ],
+                                        "example": "google"
+                                    },
+                                    "token": {
+                                        "description": "The short lived access token that you receives from the provider a.k.a OAuth Token",
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logged in successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/apple/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Apple login",
+                "requestBody": {
+                    "description": "If email is empty then send it in this format: ***provider_id@provider_type.com*** i.e ***100384341197888609672@google.com***",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "provider_id",
+                                    "provider_type",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "salman ansari"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "salman.iroid@gmail.com"
+                                    },
+                                    "profile_picture": {
+                                        "type": "string",
+                                        "example": "http://example.com/test.jpg"
+                                    },
+                                    "provider_id": {
+                                        "type": "string",
+                                        "example": "100384341197888609672"
+                                    },
+                                    "provider_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "google",
+                                            "facebook",
+                                            "apple",
+                                            "github"
+                                        ],
+                                        "example": "google"
+                                    },
+                                    "token": {
+                                        "description": "The short lived access token that you receives from the provider a.k.a OAuth Token",
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logged in successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/social-login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Any social login",
+                "requestBody": {
+                    "description": "If email is empty then send it in this format: ***provider_id@provider_type.com*** i.e ***100384341197888609672@google.com***",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "provider_type",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "provider_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "google",
+                                            "facebook",
+                                            "apple",
+                                            "github"
+                                        ],
+                                        "example": "google"
+                                    },
+                                    "token": {
+                                        "description": "The short lived access token that you receives from the provider a.k.a OAuth Token",
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logged in successfully",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/force/update": {
+            "post": {
+                "tags": [
+                    "Common"
+                ],
+                "summary": "Result status 1->stands for force update, 2->recommend to update, 0->Allready up to date",
+                "requestBody": {
+                    "description": "Pass current app version and type(iOS/Android)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "version",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "version": {
+                                        "type": "string",
+                                        "example": "1.6"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "iOS"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "result fetched",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {}
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
